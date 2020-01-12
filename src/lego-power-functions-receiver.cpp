@@ -1,39 +1,102 @@
-/* lego-power-functions-receiver library by @olaven
- */
+#include "Particle.h"
+#include "lpf.h"
 
-#include "lego-power-functions-receiver.h"
 
-/**
- * Constructor.
- */
-Legopowerfunctionsreceiver::Legopowerfunctionsreceiver()
-{
-  // be sure not to call anything that requires hardware be initialized here, put those in begin()
+LegoPowerFunctions::LegoPowerFunctions(int _led_pin, int _channel, int _output) {
+
+  this->led_pin = _led_pin;
+  this->channel = _channel;
+  this->output = _output;
+  this->speed = 0;
+
+  pinMode(led_pin, OUTPUT);
 }
 
-/**
- * Example method.
- */
-void Legopowerfunctionsreceiver::begin()
-{
-    // initialize hardware
-    Serial.println("called begin");
+int LegoPowerFunctions::get_cycles(float number) {
+
+  return int ((1.0/38000.0) * 1000 * 1000 * number);
 }
 
-/**
- * Example method.
- */
-void Legopowerfunctionsreceiver::process()
-{
-    // do something useful
-    Serial.println("called process");
-    doit();
+int LegoPowerFunctions::get_checksum() {
+
+  return (0xf ^ first_nibble ^ second_nibble ^ third_nibble);
 }
 
-/**
-* Example private method
-*/
-void Legopowerfunctionsreceiver::doit()
-{
-    Serial.println("called doit");
+void LegoPowerFunctions::send_bit() {
+
+   const int delay = get_cycles(0.5);
+
+   for(int i = 0; i < 6; i++) {
+
+     digitalWrite(this->led_pin, HIGH);
+     delayMicroseconds(delay);
+     digitalWrite(this->led_pin, LOW);
+     delayMicroseconds(delay);
+   }
+}
+
+void LegoPowerFunctions::start_stop() {
+
+  send_bit();
+  int start_stop_delay = get_cycles(39);
+  delayMicroseconds(start_stop_delay);
+}
+
+void LegoPowerFunctions::send_message() {
+
+  const int message = this->first_nibble << 12 | this->second_nibble << 8 | this->third_nibble << 4 | this->get_checksum();
+  const int HIGH_PAUSE = this->get_cycles(21);
+  const int LOW_PAUSE = this->get_cycles(10);
+
+  for(int i = 0; i < 6; i++) {
+
+    this->start_stop();
+    for(int j = 0; j < 16; j++) {
+
+      this->send_bit();
+      delayMicroseconds((0x8000 & (message << j)) != 0 ? HIGH_PAUSE : LOW_PAUSE);
+    }
+    this->start_stop();
+  }
+}
+
+void LegoPowerFunctions::stop() {
+
+  this->third_nibble = speed;
+  this->send_message();
+}
+
+void LegoPowerFunctions::go() {
+
+  this->first_nibble = 8 | (this->channel - 1);
+  this->second_nibble = 4 | this->output;
+  this->third_nibble = speed;
+
+  this->send_message();
+}
+
+void LegoPowerFunctions::step_forwards() {
+
+  if (speed > 7) {
+
+    speed = 0;
+  } else {
+
+    speed = (speed + 1) % 7;
+  }
+}
+
+void LegoPowerFunctions::step_backwards() {
+
+  Serial.println(speed);
+  if (speed == 0) {
+
+    speed = 15;
+  } else if (speed < 9) {
+
+    speed = 0;
+  } else {
+
+    speed = speed - 1;
+  }
 }

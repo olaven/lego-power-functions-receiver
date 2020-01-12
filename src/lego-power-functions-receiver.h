@@ -1,33 +1,33 @@
-#pragma once
+#ifndef LEGO_POWER_FUNCTIONS_PARTICLE_H
+#define LEGO_POWER_FUNCTIONS_PARTICLE_H
 
-/* lego-power-functions-receiver library by @olaven
- */
+#define LPF_RECEIVER_BLUE 1
+#define LPF_RECEIVER_RED 0
 
-// This will load the definition for common Particle variable types
-#include "Particle.h"
+class LegoPowerFunctions {
 
-// This is your main class that users will import into their application
-class Legopowerfunctionsreceiver
-{
-public:
-  /**
-   * Constructor
-   */
-  Legopowerfunctionsreceiver();
+  public:
+     int speed;
+     LegoPowerFunctions(int _led_pin, int _channel, int _output);
+     void go();
+     void stop();
+     void step_forwards();
+     void step_backwards();
 
-  /**
-   * Example method
-   */
-  void begin();
-
-  /**
-   * Example method
-   */
-  void process();
-
-private:
-  /**
-   * Example private method
-   */
-  void doit();
+  private:
+      int led_pin;
+      int channel;
+      int output;
+      int first_nibble; //TODO: have Message-class handle content logic
+      int second_nibble;
+      int third_nibble;
+      int get_cycles(float number);
+      int get_checksum();
+      void send_bit();
+      void start_stop();
+      void send_message();
 };
+
+
+
+#endif // LEGO_POWER_FUNCTIONS_PARTICLE_H
