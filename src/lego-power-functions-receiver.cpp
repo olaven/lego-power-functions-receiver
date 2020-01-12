@@ -1,5 +1,5 @@
 #include "Particle.h"
-#include "lpf.h"
+#include "lego-power-functions-receiver.h"
 
 
 LegoPowerFunctions::LegoPowerFunctions(int _led_pin, int _channel, int _output) {
