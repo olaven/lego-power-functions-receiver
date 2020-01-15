@@ -1,9 +1,7 @@
-#define CONFIG_CATCH_MAIN
-#include "catch.hpp"
+#define CATCH_CONFIG_MAIN
+#include "./catch.hpp"
 
-#include "../src/lego-power-functions-receiver.h"
-
-TEST_CASE("Writing tests is possible") {
-
+TEST_CASE("Getting to know catch2") {
   REQUIRE(1 == 1);
+  REQUIRE(1 != 1);
 }
