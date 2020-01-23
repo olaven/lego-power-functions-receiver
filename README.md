@@ -14,7 +14,7 @@ This library enables communication with the [IR
 receiver](https://www.lego.com/en-us/product/lego-power-functions-ir-receiver-8884).
 
 
-```
+```c++
 #include "lego-power-functions-receiver.h"
 
 const int ir_led_pin = D0; 
@@ -39,6 +39,18 @@ This is a library that enables control of a Lego Train.
 Just like a [the
 remote](https://www.lego.com/nb-no/product/lego-power-functions-ir-speed-remote-control-8879),
 but programatically, through Particle. 
+
+### Arguments
+1. `ir_led_pin`: the pin of the IR LED, on your Particle device
+2. `channel`: Must match the selected channel on the receiver (1-4)
+3. `output`: The receiver has one red and one blue output, respectively:
+`LPF_RECEIVER_RED` and `LPF_RECEIVER_BLUE`
+
+### Methods 
+* `.go`, sends signal to move at selected speed 
+* `.step_forwards` increases speed, until maximum
+* `.step_backwards` decreases speed, until minimum
+* `.stop` sends signal to stop
 
 ## Contributing
 
