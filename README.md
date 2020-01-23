@@ -2,6 +2,11 @@
 
 A Particle library for controllling the Lego Power Functions IR Receiver. 
 
+_Credit where credit is due:_
+This library is based on [jurriaan's
+code](https://github.com/jurriaan/Arduino-PowerFunctions) as well as the [1.2
+specification](https://github.com/jurriaan/Arduino-PowerFunctions/raw/master/LEGO_Power_Functions_RC_v120.pdf)
+of the ir receiver. Thanks!
 
 ## Usage
 
@@ -30,7 +35,10 @@ See the [examples](examples) folder for more details.
 
 ## Documentation
 
-TODO: Describe `Legopowerfunctionsreceiver`
+This is a library that enables control of a Lego Train. 
+Just like a [the
+remote](https://www.lego.com/nb-no/product/lego-power-functions-ir-speed-remote-control-8879),
+but programatically, through Particle. 
 
 ## Contributing
 
