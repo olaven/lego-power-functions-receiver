@@ -88,7 +88,6 @@ void LegoPowerFunctions::step_forwards() {
 
 void LegoPowerFunctions::step_backwards() {
 
-  Serial.println(speed);
   if (speed == 0) {
 
     speed = 15;
