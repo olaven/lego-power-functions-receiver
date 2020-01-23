@@ -1,5 +1,15 @@
+#ifdef PLATFORM_ID
 #include "Particle.h"
+#else
+#include "Particle_mock.h"
+#endif
+
 #include "lego-power-functions-receiver.h"
+
+//fastest backwards -> fastest forwards
+const int steps[] = {
+  9, 10, 11, 12, 13, 14, 15, 8, 1, 2, 3, 4, 5, 6, 7,
+};
 
 
 LegoPowerFunctions::LegoPowerFunctions(int _led_pin, int _channel, int _output) {
@@ -7,7 +17,7 @@ LegoPowerFunctions::LegoPowerFunctions(int _led_pin, int _channel, int _output) 
   this->led_pin = _led_pin;
   this->channel = _channel;
   this->output = _output;
-  this->speed = 0;
+  this->speed = 7; //<- middle of array. Old: 0;
 
   pinMode(led_pin, OUTPUT);
 }
@@ -62,7 +72,7 @@ void LegoPowerFunctions::send_message() {
 
 void LegoPowerFunctions::stop() {
 
-  this->third_nibble = speed;
+  this->speed = 7;
   this->send_message();
 }
 
@@ -70,32 +80,21 @@ void LegoPowerFunctions::go() {
 
   this->first_nibble = 8 | (this->channel - 1);
   this->second_nibble = 4 | this->output;
-  this->third_nibble = speed;
+  this->third_nibble = steps[speed];//speed;
 
   this->send_message();
 }
 
+
 void LegoPowerFunctions::step_forwards() {
 
-  if (speed > 7) {
-
-    speed = 0;
-  } else {
-
-    speed = (speed + 1) % 7;
-  }
+  if (speed == 14) return; //should not go higher
+  speed = (speed + 1) % 15;
 }
 
 void LegoPowerFunctions::step_backwards() {
 
-  if (speed == 0) {
 
-    speed = 15;
-  } else if (speed < 9) {
-
-    speed = 0;
-  } else {
-
-    speed = speed - 1;
-  }
+  if (speed == 0) return;
+  speed -= 1;
 }

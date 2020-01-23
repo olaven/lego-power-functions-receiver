@@ -13,11 +13,11 @@ class LegoPowerFunctions {
      void stop();
      void step_forwards();
      void step_backwards();
+     int led_pin;
+     int channel;
+     int output;
 
   private:
-      int led_pin;
-      int channel;
-      int output;
       int first_nibble; //TODO: have Message-class handle content logic
       int second_nibble;
       int third_nibble;
